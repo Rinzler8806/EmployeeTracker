@@ -105,20 +105,76 @@ function addDept() {
     })
 }
 
-function addRole() {
-    inquirer.prompt({
-        name: 'whichRole',
+function addEmployee() {
+    inquirer.prompt([{
+        name: 'firstName',
         type: 'input',
-        message: 'What is the role of the employee you would like to create?',
-    }).then((res) => {
-        console.log("Designating a role...\n");
-        var query = connection.query(
-            "INSERT INTO role SET ?", {
-            title: res.whichRole
-        },
+        message: 'What is the first name of the employee you would like to add?',
+    },
+    {
+        name: 'lastName',
+        type: 'input',
+        message: 'What is the last name of the employee you would like to add?',
+    },
+    {
+        name: 'roleID',
+        type: 'input',
+        message: 'What is the role ID of the employee?',
+    },
+    {
+        name: 'managerID',
+        type: 'input',
+        message: 'What is the ID of the employees manager?',
+    }])
+    .then((res) => {
+        console.log("Adding employee...\n");
+        connection.query(
+            "INSERT INTO employee SET ?", [
+        {
+            first_name: res.firstName,
+            last_name: res.lastName,
+            role_id: res.roleID,
+            manager_id: res.managerID
+        }
+        ],
             function (err, res) {
                 if (err) throw err;
-                console.log(res.affectedRows + " role applied!\n");
+                console.log(res.affectedRows + " employee added!\n");
+                start();
+            }
+        );
+    })
+}
+
+function addRole() {
+    inquirer.prompt([{
+        name: 'title',
+        type: 'input',
+        message: 'What is the name of the role you would like to add?',
+    },
+    {
+        name: 'salary',
+        type: 'input',
+        message: 'What is the salary for the role being added?',
+    },
+    {
+        name: 'departmentID',
+        type: 'input',
+        message: 'What department ID number is the new role listed under?',
+    }])
+    .then((res) => {
+        console.log("Adding role...\n");
+        connection.query(
+            "INSERT INTO role SET ?", [
+        {
+            title: res.title,
+            salary: res.salary,
+            department_id: res.departmentID
+        }
+        ],
+            function (err, res) {
+                if (err) throw err;
+                console.log(res.affectedRows + " role added!\n");
                 start();
             }
         );
@@ -220,4 +276,4 @@ function deleteRole() {
                 }
             )
         });
-}
+    }
